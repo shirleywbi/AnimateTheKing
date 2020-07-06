@@ -39,30 +39,49 @@ canvas.create_oval(LEFT_FOOT_POS_X, LEFT_FOOT_POS_Y, LEFT_FOOT_POS_X + FOOT_WIDT
 canvas.create_line(RIGHT_LEG_POS_X, RIGHT_LEG_POS_Y, RIGHT_FOOT_POS_X, RIGHT_FOOT_POS_Y + FOOT_HEIGHT - LEG_LENGTH, tags=R_FOOT)
 canvas.create_oval(RIGHT_FOOT_POS_X, RIGHT_FOOT_POS_Y, RIGHT_FOOT_POS_X + FOOT_WIDTH, RIGHT_FOOT_POS_Y + FOOT_HEIGHT, tags=R_FOOT, fill=FOOT_COLOR)
 
-canvas.create_line(BASE_POS_X, BASE_POS_Y, BASE_POS_X + BASE_WIDTH, BASE_POS_Y, tags="base")
+# Actions
+def remove_left_foot(tk, canvas):
+    while (canvas.coords(L_FOOT)[0] <= CANVAS_WIDTH and canvas.coords(L_FOOT)[3] > 0):
+        canvas.move(L_FOOT, 2, -1)
+        tk.update()
+        time.sleep(0.01)
 
-# Feet
-LEG_LENGTH = 30
-LEG_GAP = CROWN_SUB_WIDTH * 2
-FOOT_COLOR = "grey"
-FOOT_SPACE_Y = 0
-FOOT_WIDTH = CROWN_SUB_WIDTH * 1.5
-FOOT_HEIGHT = CROWN_SUB_WIDTH * 2/3
+def remove_right_foot(tk, canvas):
+    while (canvas.coords(R_FOOT)[0] <= CANVAS_WIDTH and canvas.coords(R_FOOT)[3] > 0):
+        canvas.move(R_FOOT, 2, -1)
+        tk.update()
+        time.sleep(0.01)
 
-LEFT_FOOT_POS_X = IMAGE_OFFSET_X - (CROWN_SUB_WIDTH / 2)
-LEFT_FOOT_POS_Y = BASE_POS_Y + FOOT_SPACE_Y + LEG_LENGTH
-LEFT_LEG_POS_X = LEFT_FOOT_POS_X + FOOT_WIDTH
-LEFT_LEG_POS_Y = LEFT_FOOT_POS_Y + (FOOT_HEIGHT / 2)
+def beard_into_arms(tk, canvas):
+    for i in range(400):
+        canvas.move(BEARD_1, 2, -1)
+        canvas.move(BEARD_6, 2, -1)
+        tk.update()
+        time.sleep(0.01)
 
-RIGHT_FOOT_POS_X = LEFT_LEG_POS_X + LEG_GAP
-RIGHT_FOOT_POS_Y = LEFT_FOOT_POS_Y
-RIGHT_LEG_POS_X = RIGHT_FOOT_POS_X
-RIGHT_LEG_POS_Y = RIGHT_FOOT_POS_Y + (FOOT_HEIGHT / 2)
+def remove_crown(tk, canvas):
+    for i in range(400):
+        canvas.move(CROWN, 2, -1)
+        tk.update()
+        time.sleep(0.01)
 
-canvas.create_line(LEFT_LEG_POS_X, LEFT_LEG_POS_Y, LEFT_FOOT_POS_X + FOOT_WIDTH, LEFT_FOOT_POS_Y + FOOT_HEIGHT - LEG_LENGTH, tags="left_foot")
-canvas.create_oval(LEFT_FOOT_POS_X, LEFT_FOOT_POS_Y, LEFT_FOOT_POS_X + FOOT_WIDTH, LEFT_FOOT_POS_Y + FOOT_HEIGHT, tags="left_foot", fill=FOOT_COLOR)
+def collapse_beard(tk, canvas):
+    for i in range(400):
+        canvas.move(BEARD_1, 2, -1)
+        canvas.move(BEARD_2, 2, -1)
+        canvas.move(BEARD_3, 2, -1)
+        canvas.move(BEARD_4, 2, -1)
+        canvas.move(BEARD_5, 2, -1)
+        canvas.move(BEARD_6, 2, -1)
+        canvas.move(BASE, 2, -1)
+        tk.update()
+        time.sleep(0.01)
 
-canvas.create_line(RIGHT_LEG_POS_X, RIGHT_LEG_POS_Y, RIGHT_FOOT_POS_X, RIGHT_FOOT_POS_Y + FOOT_HEIGHT - LEG_LENGTH, tags="right_foot")
-canvas.create_oval(RIGHT_FOOT_POS_X, RIGHT_FOOT_POS_Y, RIGHT_FOOT_POS_X + FOOT_WIDTH, RIGHT_FOOT_POS_Y + FOOT_HEIGHT, tags="right_foot", fill=FOOT_COLOR)
+# Animation
+remove_right_foot(tk, canvas)
+remove_left_foot(tk, canvas)
+beard_into_arms(tk, canvas)
+remove_crown(tk, canvas)
+collapse_beard(tk, canvas)
 
 tk.mainloop()
