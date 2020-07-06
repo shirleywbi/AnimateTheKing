@@ -59,11 +59,17 @@ def beard_into_arms(tk, canvas):
         tk.update()
         time.sleep(0.01)
 
-def remove_crown(tk, canvas):
-    for i in range(400):
-        canvas.move(CROWN, 2, -1)
+def toss_crown(tk, canvas):
+    for i in range(9, 0, -1):
+        canvas.move(CROWN, 0, -pow(i, 2))
         tk.update()
-        time.sleep(0.01)
+        time.sleep(0.05)
+
+    # TODO: convert to while loop that stops when canvas reaches certain point
+    for i in range(12):
+        canvas.move(CROWN, 0, pow(i, 2))
+        tk.update()
+        time.sleep(0.05)
 
 def collapse_beard(tk, canvas):
     for i in range(400):
@@ -81,7 +87,7 @@ def collapse_beard(tk, canvas):
 remove_right_foot(tk, canvas)
 remove_left_foot(tk, canvas)
 beard_into_arms(tk, canvas)
-remove_crown(tk, canvas)
+toss_crown(tk, canvas)
 collapse_beard(tk, canvas)
 
 tk.mainloop()
