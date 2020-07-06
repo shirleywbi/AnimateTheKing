@@ -41,13 +41,13 @@ canvas.create_oval(RIGHT_FOOT_POS_X, RIGHT_FOOT_POS_Y, RIGHT_FOOT_POS_X + FOOT_W
 
 # Actions
 def remove_left_foot(tk, canvas):
-    while (canvas.coords(L_FOOT)[0] <= CANVAS_WIDTH and canvas.coords(L_FOOT)[3] > 0):
+    while (canvas.coords(L_FOOT)[0] <= CANVAS_WIDTH and canvas.coords(L_FOOT)[2] > 0):
         canvas.move(L_FOOT, 2, -1)
         tk.update()
         time.sleep(0.01)
 
 def remove_right_foot(tk, canvas):
-    while (canvas.coords(R_FOOT)[0] <= CANVAS_WIDTH and canvas.coords(R_FOOT)[3] > 0):
+    while (canvas.coords(R_FOOT)[0] <= CANVAS_WIDTH and canvas.coords(R_FOOT)[2] > 0):
         canvas.move(R_FOOT, 2, -1)
         tk.update()
         time.sleep(0.01)
@@ -59,17 +59,19 @@ def beard_into_arms(tk, canvas):
         tk.update()
         time.sleep(0.01)
 
+# TODO: Add bounce, fix disappearing crown
 def toss_crown(tk, canvas):
     for i in range(9, 0, -1):
         canvas.move(CROWN, 0, -pow(i, 2))
         tk.update()
         time.sleep(0.05)
 
-    # TODO: convert to while loop that stops when canvas reaches certain point
-    for i in range(12):
-        canvas.move(CROWN, 0, pow(i, 2))
+    i = 0
+    while (canvas.coords(CROWN)[3] < FLOOR):
+        canvas.move(CROWN, 0, max(pow(i, 2), FLOOR))
         tk.update()
         time.sleep(0.05)
+        i += 1
 
 def collapse_beard(tk, canvas):
     for i in range(400):
