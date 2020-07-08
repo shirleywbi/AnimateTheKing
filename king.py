@@ -61,16 +61,16 @@ def beard_into_arms(tk, canvas):
         tk.update()
         time.sleep(0.01)
 
-# TODO: Add bounce, fix disappearing crown
+# TODO: Add bounce
 def toss_crown(tk, canvas):
-    for i in range(9, 0, -1):
-        canvas.move(CROWN, 0, -pow(i, 2))
+    for i in range(10, 0, -1):
+        canvas.move(CROWN, 0, -pow(i, 1.5))
         tk.update()
         time.sleep(0.05)
 
     i = 0
-    while (canvas.coords(CROWN)[3] < FLOOR):
-        canvas.move(CROWN, 0, max(pow(i, 2), FLOOR))
+    while (canvas.coords(CROWN)[11] < FLOOR):
+        canvas.move(CROWN, 0, min(pow(i, 1.5), FLOOR - canvas.coords(CROWN)[11]))
         tk.update()
         time.sleep(0.05)
         i += 1
