@@ -1,12 +1,12 @@
-from tkinter import *
+import tkinter as tkr
 import random
 import time
 from constants import *
 
 
 # Initialize canvas
-tk = Tk()
-canvas = Canvas(tk, width=CANVAS_WIDTH, height=CANVAS_HEIGHT)
+tk = tkr.Tk()
+canvas = tkr.Canvas(tk, width=CANVAS_WIDTH, height=CANVAS_HEIGHT)
 tk.title("King")
 canvas.pack()
 
