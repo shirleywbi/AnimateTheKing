@@ -74,14 +74,21 @@ def toss_crown(tk, canvas):
         i += 1
 
 def collapse_beard(tk, canvas):
-    for i in range(400):
-        canvas.move(BEARD_1, 2, -1)
-        canvas.move(BEARD_2, 2, -1)
-        canvas.move(BEARD_3, 2, -1)
-        canvas.move(BEARD_4, 2, -1)
-        canvas.move(BEARD_5, 2, -1)
-        canvas.move(BEARD_6, 2, -1)
-        canvas.move(BASE, 2, -1)
+    while (
+        canvas.coords(BEARD_1)[3] < FLOOR or
+        canvas.coords(BEARD_2)[3] < FLOOR or
+        canvas.coords(BEARD_3)[3] < FLOOR or
+        canvas.coords(BEARD_4)[3] < FLOOR or
+        canvas.coords(BEARD_5)[3] < FLOOR or
+        canvas.coords(BEARD_6)[3] < FLOOR or
+        canvas.coords(BASE)[3] < FLOOR):
+        canvas.move(BEARD_1, 0, min(1, canvas.coords(BEARD_1)[3] < FLOOR))
+        canvas.move(BEARD_2, 0, min(1, canvas.coords(BEARD_2)[3] < FLOOR))
+        canvas.move(BEARD_3, 0, min(1, canvas.coords(BEARD_3)[3] < FLOOR))
+        canvas.move(BEARD_4, 0, min(1, canvas.coords(BEARD_4)[3] < FLOOR))
+        canvas.move(BEARD_5, 0, min(1, canvas.coords(BEARD_5)[3] < FLOOR))
+        canvas.move(BEARD_6, 0, min(1, canvas.coords(BEARD_6)[3] < FLOOR))
+        canvas.move(BASE, 0, min(1, canvas.coords(BASE)[3] < FLOOR))
         tk.update()
         time.sleep(0.01)
 
