@@ -1,6 +1,7 @@
 import tkinter as tkr
 import random
 import time
+import action_helpers as action
 from constants import *
 
 
@@ -75,24 +76,31 @@ def toss_crown(tk, canvas):
         time.sleep(0.05)
         i += 1
 
+def not_on_floor(item):
+    return canvas.coords(item)[1] < FLOOR or canvas.coords(item)[3] < FLOOR
+
+def at_least_one_not_on_floor(items):
+    for item in items:
+        if not_on_floor(item):
+            return True
+    return False
+
 def collapse_beard(tk, canvas):
-    while (
-        canvas.coords(BEARD_1)[3] < FLOOR or
-        canvas.coords(BEARD_2)[3] < FLOOR or
-        canvas.coords(BEARD_3)[3] < FLOOR or
-        canvas.coords(BEARD_4)[3] < FLOOR or
-        canvas.coords(BEARD_5)[3] < FLOOR or
-        canvas.coords(BEARD_6)[3] < FLOOR or
-        canvas.coords(BASE)[3] < FLOOR):
-        canvas.move(BEARD_1, 0, min(1, canvas.coords(BEARD_1)[3] < FLOOR))
-        canvas.move(BEARD_2, 0, min(1, canvas.coords(BEARD_2)[3] < FLOOR))
-        canvas.move(BEARD_3, 0, min(1, canvas.coords(BEARD_3)[3] < FLOOR))
-        canvas.move(BEARD_4, 0, min(1, canvas.coords(BEARD_4)[3] < FLOOR))
-        canvas.move(BEARD_5, 0, min(1, canvas.coords(BEARD_5)[3] < FLOOR))
-        canvas.move(BEARD_6, 0, min(1, canvas.coords(BEARD_6)[3] < FLOOR))
-        canvas.move(BASE, 0, min(1, canvas.coords(BASE)[3] < FLOOR))
+
+    fall_rate = 1.3
+    angle_map = { BEARD_1: -.6, BEARD_2: -0.9, BEARD_3: 0.6, BEARD_4: -0.7, BEARD_5: -0.9, BEARD_6: 0.7, BASE: 0.6}
+    beard_and_base = (BEARD_1, BEARD_2, BEARD_3, BEARD_4, BEARD_5, BEARD_6, BASE)
+
+    def fall_and_rotate(item):
+        if (not_on_floor(item)):
+            canvas.move(item, 0, pow(fall_rate, 2))
+            action.rotate(canvas, item, angle_map[item])
+
+    while(at_least_one_not_on_floor(beard_and_base)):
+        for line in beard_and_base:
+            fall_and_rotate(line)
         tk.update()
-        time.sleep(0.01)
+        time.sleep(0.008)
 
 # Animation
 remove_right_foot(tk, canvas)
