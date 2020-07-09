@@ -42,71 +42,78 @@ canvas.create_oval(RIGHT_FOOT_POS_X, RIGHT_FOOT_POS_Y, RIGHT_FOOT_POS_X + FOOT_W
 
 # Actions
 # TODO: Add rotation
-def remove_left_foot(tk, canvas):
+def remove_left_foot():
     while (canvas.coords(L_FOOT)[0] <= CANVAS_WIDTH and canvas.coords(L_FOOT)[2] > 0):
         canvas.move(L_LEG, 2, .5)
         tk.update()
         time.sleep(0.01)
 
 # TODO: Add rotation
-def remove_right_foot(tk, canvas):
+def remove_right_foot():
     while (canvas.coords(R_FOOT)[0] <= CANVAS_WIDTH and canvas.coords(R_FOOT)[2] > 0):
         canvas.move(R_LEG, 2, -1)
         tk.update()
         time.sleep(0.01)
 
-def beard_into_arms(tk, canvas):
+def beard_into_arms():
     for i in range(400):
         canvas.move(BEARD_1, 2, -1)
         canvas.move(BEARD_6, 2, -1)
         tk.update()
         time.sleep(0.01)
 
-# TODO: Add bounce
-def toss_crown(tk, canvas):
+def move_crown_up():
     for i in range(10, 0, -1):
         canvas.move(CROWN, 0, -pow(i, 1.5))
         tk.update()
         time.sleep(0.05)
 
+# TODO: Add crown bounce on floor
+# TODO: Add dents
+def collide_crown_with_beard():
     i = 0
-    while (canvas.coords(CROWN)[11] < FLOOR):
-        canvas.move(CROWN, 0, min(pow(i, 1.5), FLOOR - canvas.coords(CROWN)[11]))
-        tk.update()
-        time.sleep(0.05)
-        i += 1
-
-def not_on_floor(item):
-    return canvas.coords(item)[1] < FLOOR or canvas.coords(item)[3] < FLOOR
-
-def at_least_one_not_on_floor(items):
-    for item in items:
-        if not_on_floor(item):
-            return True
-    return False
-
-def collapse_beard(tk, canvas):
-
-    fall_rate = 1.3
-    angle_map = { BEARD_1: -.6, BEARD_2: -0.9, BEARD_3: 0.6, BEARD_4: -0.7, BEARD_5: -0.9, BEARD_6: 0.7, BASE: 0.6}
+    fall_rate = 3
+    angle_map = { BEARD_1: -3, BEARD_2: -4, BEARD_3: 5, BEARD_4: -3.5, BEARD_5: -4.9, BEARD_6: 4.2, BASE: 5.3}
     beard_and_base = (BEARD_1, BEARD_2, BEARD_3, BEARD_4, BEARD_5, BEARD_6, BASE)
+    drop_beard = False
 
     def fall_and_rotate(item):
         if (not_on_floor(item)):
             canvas.move(item, 0, pow(fall_rate, 2))
             action.rotate(canvas, item, angle_map[item])
 
-    while(at_least_one_not_on_floor(beard_and_base)):
-        for line in beard_and_base:
-            fall_and_rotate(line)
-        tk.update()
-        time.sleep(0.008)
+    def not_on_floor(item):
+        return canvas.coords(item)[1] < FLOOR or canvas.coords(item)[3] < FLOOR
 
-# Animation
-remove_right_foot(tk, canvas)
-remove_left_foot(tk, canvas)
-beard_into_arms(tk, canvas)
-toss_crown(tk, canvas)
-collapse_beard(tk, canvas)
+    def at_least_one_not_on_floor(items):
+        for item in items:
+            if not_on_floor(item):
+                return True
+        return False
+
+    def collapse_beard():
+        if (at_least_one_not_on_floor(beard_and_base)):
+            for line in beard_and_base:
+                fall_and_rotate(line)
+
+    while (canvas.coords(CROWN)[11] < FLOOR or at_least_one_not_on_floor(beard_and_base)):
+        if canvas.coords(CROWN)[11] < FLOOR:
+            canvas.move(CROWN, 0, min(pow(i, 1.2), FLOOR - canvas.coords(CROWN)[11]))
+        if canvas.coords(CROWN)[11] > canvas.coords(BEARD_1)[1]:
+            drop_beard = True
+        if drop_beard:
+            collapse_beard()
+        tk.update()
+        time.sleep(0.01)
+        i += 0.1
+
+def animation():
+    # remove_right_foot()
+    # remove_left_foot()
+    #beard_into_arms()
+    move_crown_up()
+    collide_crown_with_beard()
+
+animation()
 
 tk.mainloop()
