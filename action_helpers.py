@@ -1,6 +1,12 @@
 import math
 
 # Formula as per https://math.stackexchange.com/questions/1964905/rotation-around-non-zero-point
+def rotate(canvas, item, angle, center = None):
+    if center == None:
+        canvas.coords(item, rotate_line_on_pivot(canvas.coords(item), angle))
+    else:
+        canvas.coords(item, rotate_line_around_point(center, canvas.coords(item), angle))
+
 def rotate_line_on_pivot(coords, angle):
     return rotate_line_around_point((coords[0], coords[1]), coords, angle)
 
