@@ -104,6 +104,8 @@ def pick_up_crown_with_beard():
         time.sleep(0.01)
         k += k_rate
 
+    canvas.coords(BEARD_1, left_shoulder[0], left_shoulder[1], left_hand[0], left_hand[1] - i - j - k)
+    canvas.coords(BEARD_6, right_shoulder[0], right_shoulder[1], right_hand[0], right_hand[1] - i - j - k)
     time.sleep(1)
 
 # TODO: Add crown bounce on floor
