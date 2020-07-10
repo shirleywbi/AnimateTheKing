@@ -15,8 +15,8 @@ canvas.pack()
 def setup():
 
     def create_beard(count, tag):
-        canvas.create_arc(BEARD_POS_X + BEARD_SPACE * count, BEARD_POS_Y, BEARD_POS_X + BEARD_SPACE * count, BEARD_POS_Y + BEARD_LENGTH,
-            tags=(tag, KING), style='arc', width=BEARD_THICKNESS, outline=BEARD_COLOR)
+        canvas.create_line(BEARD_POS_X + BEARD_SPACE * count, BEARD_POS_Y, BEARD_POS_X + BEARD_SPACE * count, BEARD_POS_Y + BEARD_LENGTH,
+            tags=(tag, KING), width=BEARD_THICKNESS, fill=BEARD_COLOR, cap="round", join="round")
 
     canvas.create_polygon(
         IMAGE_OFFSET_X + CROWN_SUB_WIDTH * 0, CROWN_MID_POINT,
