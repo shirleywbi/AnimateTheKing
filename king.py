@@ -13,6 +13,11 @@ canvas.pack()
 
 # Initialize images
 def setup():
+
+    def create_beard(count, tag):
+        canvas.create_arc(BEARD_POS_X + BEARD_SPACE * count, BEARD_POS_Y, BEARD_POS_X + BEARD_SPACE * count, BEARD_POS_Y + BEARD_LENGTH,
+            tags=(tag, KING), style='arc', width=BEARD_THICKNESS, outline=BEARD_COLOR)
+
     canvas.create_polygon(
         IMAGE_OFFSET_X + CROWN_SUB_WIDTH * 0, CROWN_MID_POINT,
         IMAGE_OFFSET_X + CROWN_SUB_WIDTH * 1, CROWN_LOW_POINT,
@@ -26,22 +31,25 @@ def setup():
         tags=(CROWN, KING)
     )
 
-    canvas.create_line(BEARD_POS_X + BEARD_SPACE * 0, BEARD_POS_Y, BEARD_POS_X + BEARD_SPACE * 0, BEARD_POS_Y + BEARD_LENGTH, tags=(BEARD_1, KING), width=BEARD_THICKNESS, fill=BEARD_COLOR)
-    canvas.create_line(BEARD_POS_X + BEARD_SPACE * 1, BEARD_POS_Y, BEARD_POS_X + BEARD_SPACE * 1, BEARD_POS_Y + BEARD_LENGTH, tags=(BEARD_2, KING), width=BEARD_THICKNESS, fill=BEARD_COLOR)
-    canvas.create_line(BEARD_POS_X + BEARD_SPACE * 2, BEARD_POS_Y, BEARD_POS_X + BEARD_SPACE * 2, BEARD_POS_Y + BEARD_LENGTH, tags=(BEARD_3, KING), width=BEARD_THICKNESS, fill=BEARD_COLOR)
-    canvas.create_line(BEARD_POS_X + BEARD_SPACE * 3, BEARD_POS_Y, BEARD_POS_X + BEARD_SPACE * 3, BEARD_POS_Y + BEARD_LENGTH, tags=(BEARD_4, KING), width=BEARD_THICKNESS, fill=BEARD_COLOR)
-    canvas.create_line(BEARD_POS_X + BEARD_SPACE * 4, BEARD_POS_Y, BEARD_POS_X + BEARD_SPACE * 4, BEARD_POS_Y + BEARD_LENGTH, tags=(BEARD_5, KING), width=BEARD_THICKNESS, fill=BEARD_COLOR)
-    canvas.create_line(BEARD_POS_X + BEARD_SPACE * 5, BEARD_POS_Y, BEARD_POS_X + BEARD_SPACE * 5, BEARD_POS_Y + BEARD_LENGTH, tags=(BEARD_6, KING), width=BEARD_THICKNESS, fill=BEARD_COLOR)
+    create_beard(0, BEARD_1)
+    create_beard(1, BEARD_2)
+    create_beard(2, BEARD_3)
+    create_beard(3, BEARD_4)
+    create_beard(4, BEARD_5)
+    create_beard(5, BEARD_6)
 
     canvas.create_line(BASE_POS_X, BASE_POS_Y, BASE_POS_X + BASE_WIDTH, BASE_POS_Y, tags=(BASE, KING), width=BASE_THICKNESS, fill=BASE_COLOR)
+    canvas.tag_lower(BASE)
 
     canvas.create_line(0, FLOOR, CANVAS_WIDTH, FLOOR, fill="red") # Temporary floor line
 
 # Actions
 def beard_into_arms():
+    pivot_1 = (canvas.coords(BEARD_1)[0], canvas.coords(BEARD_1)[1])
+    pivot_6 = (canvas.coords(BEARD_6)[0], canvas.coords(BEARD_6)[1])
     for i in range(400):
-        canvas.move(BEARD_1, 2, -1)
-        canvas.move(BEARD_6, 2, -1)
+        action.rotate(canvas, BEARD_1, 1, pivot_1)
+        action.rotate(canvas, BEARD_6, 1, pivot_6)
         tk.update()
         time.sleep(0.01)
 
@@ -96,7 +104,7 @@ def collide_crown_with_beard():
         i += 0.1
 
 def animation():
-    # beard_into_arms() # TODO: Add arcs
+    beard_into_arms()
     move_crown_up()
     collide_crown_with_beard()
 
