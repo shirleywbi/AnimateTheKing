@@ -51,11 +51,6 @@ def setup():
 # Actions
 def beard_into_arms():
 
-    def is_touching_crown():
-        right_x = canvas.coords(BEARD_1)[4] <= canvas.coords(CROWN)[8] and canvas.coords(BEARD_1)[4] >= canvas.coords(CROWN)[0]
-        right_y = canvas.coords(BEARD_1)[5] <= canvas.coords(CROWN)[11] and canvas.coords(BEARD_1)[5] >= canvas.coords(CROWN)[9]
-        return right_x and right_y
-
     left_arm = canvas.coords(BEARD_1)
     left_shoulder = (left_arm[0], left_arm[1])
     left_elbow = ((left_arm[2] + left_arm[0])/2, (left_arm[3] + left_arm[1])/2)
@@ -66,13 +61,45 @@ def beard_into_arms():
     right_elbow = ((right_arm[2] + right_arm[0])/2, (right_arm[3] + right_arm[1])/2)
     right_hand = (right_arm[2], right_arm[3])
 
+    def is_touching_crown():
+        right_x = canvas.coords(BEARD_1)[4] <= canvas.coords(CROWN)[8] and canvas.coords(BEARD_1)[4] >= canvas.coords(CROWN)[0]
+        right_y = canvas.coords(BEARD_1)[5] <= canvas.coords(CROWN)[11] and canvas.coords(BEARD_1)[5] >= canvas.coords(CROWN)[9]
+        return right_x and right_y
+
+    def is_elbow_above_shoulder():
+        return canvas.coords(BEARD_1)[0] <= canvas.coords(BEARD_1)[2] + 1
+
+    def is_arm_extended():
+        return is_elbow_above_shoulder() and canvas.coords(BEARD_1)[1] - canvas.coords(BEARD_1)[5] == BEARD_LENGTH
+
+    # Grab crown
     i = 0
     while (not is_touching_crown()):
-        canvas.coords(BEARD_1, left_shoulder[0], left_shoulder[1], left_elbow[0] - i, left_elbow[1] - i, left_hand[0], left_hand[1] - i)
-        canvas.coords(BEARD_6, right_shoulder[0], right_shoulder[1], right_elbow[0] + i, right_elbow[1] - i, right_hand[0], right_hand[1] - i)
+        canvas.coords(BEARD_1, left_shoulder[0], left_shoulder[1], left_elbow[0] - i/4, left_elbow[1] - i/4, left_hand[0], left_hand[1] - i)
+        canvas.coords(BEARD_6, right_shoulder[0], right_shoulder[1], right_elbow[0] + i/4, right_elbow[1] - i/4, right_hand[0], right_hand[1] - i)
+        tk.update()
+        time.sleep(0.008)
+        i += 1
+
+    # Straighten arms
+    j = 0
+    while (not is_elbow_above_shoulder()):
+        canvas.coords(BEARD_1, left_shoulder[0], left_shoulder[1], left_elbow[0] - i/4 + j, left_elbow[1] - i/4 - j, left_hand[0], left_hand[1] - i - j)
+        canvas.coords(BEARD_6, right_shoulder[0], right_shoulder[1], right_elbow[0] + i/4 - j, right_elbow[1] - i/4 - j, right_hand[0], right_hand[1] - i - j)
+        tk.update()
+        time.sleep(0.008)
+        j += 1
+
+    # Lengthen arms and pick up crown #TODO
+    k = 0
+    while (not is_arm_extended()):
+        canvas.coords(BEARD_1, left_shoulder[0], left_shoulder[1], left_elbow[0] - i/4 + j, left_elbow[1] - i/4 - j, left_hand[0], left_hand[1] - i - j - k)
+        canvas.coords(BEARD_6, right_shoulder[0], right_shoulder[1], right_elbow[0] + i/4 - j, right_elbow[1] - i/4 - j, right_hand[0], right_hand[1] - i - j - k)
         tk.update()
         time.sleep(0.01)
-        i += 1
+        k += 1
+
+    time.sleep(1)
 
 def move_crown_up():
     for i in range(10, 0, -1):
