@@ -45,13 +45,23 @@ def setup():
 
 # Actions
 def beard_into_arms():
-    pivot_1 = (canvas.coords(BEARD_1)[0], canvas.coords(BEARD_1)[1])
-    pivot_6 = (canvas.coords(BEARD_6)[0], canvas.coords(BEARD_6)[1])
+    left_arm = canvas.coords(BEARD_1)
+    left_shoulder = (left_arm[0], left_arm[1])
+    left_elbow = ((left_arm[2] + left_arm[0])/2, (left_arm[3] + left_arm[1])/2)
+    left_hand = (left_arm[2], left_arm[3])
+
+    right_arm = canvas.coords(BEARD_6)
+    right_shoulder = (right_arm[0], right_arm[1])
+    right_elbow = ((right_arm[2] + right_arm[0])/2, (right_arm[3] + right_arm[1])/2)
+    right_hand = (right_arm[2], right_arm[3])
+
+    i = 0
     for i in range(400):
-        action.rotate(canvas, BEARD_1, 1, pivot_1)
-        action.rotate(canvas, BEARD_6, 1, pivot_6)
+        canvas.coords(BEARD_1, left_shoulder[0], left_shoulder[1], left_elbow[0] - i, left_elbow[1] - i, left_hand[0], left_hand[1] - i)
+        canvas.coords(BEARD_6, right_shoulder[0], right_shoulder[1], right_elbow[0] + i, right_elbow[1] - i, right_hand[0], right_hand[1] - i)
         tk.update()
         time.sleep(0.01)
+        i += 1
 
 def move_crown_up():
     for i in range(10, 0, -1):
@@ -108,6 +118,7 @@ def animation():
     move_crown_up()
     collide_crown_with_beard()
 
+# TODO: Update to interupt and restart w/o completion
 def restart(event):
     canvas.delete('all')
     setup()
