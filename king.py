@@ -35,29 +35,9 @@ def setup():
 
     canvas.create_line(BASE_POS_X, BASE_POS_Y, BASE_POS_X + BASE_WIDTH, BASE_POS_Y, tags=(BASE, KING), width=BASE_THICKNESS, fill=BASE_COLOR)
 
-    canvas.create_line(LEFT_LEG_POS_X, LEFT_LEG_POS_Y, LEFT_FOOT_POS_X + FOOT_WIDTH, LEFT_FOOT_POS_Y + FOOT_HEIGHT - LEG_LENGTH, tags=(L_LEG, KING))
-    canvas.create_oval(LEFT_FOOT_POS_X, LEFT_FOOT_POS_Y, LEFT_FOOT_POS_X + FOOT_WIDTH, LEFT_FOOT_POS_Y + FOOT_HEIGHT, tags=(L_LEG, L_FOOT, KING), fill=FOOT_COLOR)
-
-    canvas.create_line(RIGHT_LEG_POS_X, RIGHT_LEG_POS_Y, RIGHT_FOOT_POS_X, RIGHT_FOOT_POS_Y + FOOT_HEIGHT - LEG_LENGTH, tags=(R_LEG, KING))
-    canvas.create_oval(RIGHT_FOOT_POS_X, RIGHT_FOOT_POS_Y, RIGHT_FOOT_POS_X + FOOT_WIDTH, RIGHT_FOOT_POS_Y + FOOT_HEIGHT, tags=(R_LEG, R_FOOT, KING), fill=FOOT_COLOR)
-
     canvas.create_line(0, FLOOR, CANVAS_WIDTH, FLOOR, fill="red") # Temporary floor line
 
 # Actions
-# TODO: Add rotation
-def remove_left_foot():
-    while (canvas.coords(L_FOOT)[0] <= CANVAS_WIDTH and canvas.coords(L_FOOT)[2] > 0):
-        canvas.move(L_LEG, 2, .5)
-        tk.update()
-        time.sleep(0.01)
-
-# TODO: Add rotation
-def remove_right_foot():
-    while (canvas.coords(R_FOOT)[0] <= CANVAS_WIDTH and canvas.coords(R_FOOT)[2] > 0):
-        canvas.move(R_LEG, 2, -1)
-        tk.update()
-        time.sleep(0.01)
-
 def beard_into_arms():
     for i in range(400):
         canvas.move(BEARD_1, 2, -1)
@@ -116,9 +96,7 @@ def collide_crown_with_beard():
         i += 0.1
 
 def animation():
-    # remove_right_foot()
-    # remove_left_foot()
-    #beard_into_arms()
+    # beard_into_arms() # TODO: Add arcs
     move_crown_up()
     collide_crown_with_beard()
 
