@@ -18,6 +18,11 @@ def setup():
         canvas.create_line(BEARD_POS_X + BEARD_SPACE * count, BEARD_POS_Y, BEARD_POS_X + BEARD_SPACE * count, BEARD_POS_Y + BEARD_LENGTH,
             tags=(tag, KING), width=BEARD_THICKNESS, fill=BEARD_COLOR, cap="round", join="round")
 
+    def create_beard_arm(count, tag):
+        x = BEARD_POS_X + BEARD_SPACE * count
+        canvas.create_line(x, BEARD_POS_Y, x, BEARD_POS_Y + BEARD_LENGTH / 2, x, BEARD_POS_Y + BEARD_LENGTH,
+            tags=(tag, KING), width=BEARD_THICKNESS, fill=BEARD_COLOR, cap="round", join="round")
+
     canvas.create_polygon(
         IMAGE_OFFSET_X + CROWN_SUB_WIDTH * 0, CROWN_MID_POINT,
         IMAGE_OFFSET_X + CROWN_SUB_WIDTH * 1, CROWN_LOW_POINT,
@@ -31,12 +36,12 @@ def setup():
         tags=(CROWN, KING)
     )
 
-    create_beard(0, BEARD_1)
+    create_beard_arm(0, BEARD_1)
     create_beard(1, BEARD_2)
     create_beard(2, BEARD_3)
     create_beard(3, BEARD_4)
     create_beard(4, BEARD_5)
-    create_beard(5, BEARD_6)
+    create_beard_arm(5, BEARD_6)
 
     canvas.create_line(BASE_POS_X, BASE_POS_Y, BASE_POS_X + BASE_WIDTH, BASE_POS_Y, tags=(BASE, KING), width=BASE_THICKNESS, fill=BASE_COLOR)
     canvas.tag_lower(BASE)
@@ -45,6 +50,12 @@ def setup():
 
 # Actions
 def beard_into_arms():
+
+    def is_touching_crown():
+        right_x = canvas.coords(BEARD_1)[4] <= canvas.coords(CROWN)[8] and canvas.coords(BEARD_1)[4] >= canvas.coords(CROWN)[0]
+        right_y = canvas.coords(BEARD_1)[5] <= canvas.coords(CROWN)[11] and canvas.coords(BEARD_1)[5] >= canvas.coords(CROWN)[9]
+        return right_x and right_y
+
     left_arm = canvas.coords(BEARD_1)
     left_shoulder = (left_arm[0], left_arm[1])
     left_elbow = ((left_arm[2] + left_arm[0])/2, (left_arm[3] + left_arm[1])/2)
@@ -56,7 +67,7 @@ def beard_into_arms():
     right_hand = (right_arm[2], right_arm[3])
 
     i = 0
-    for i in range(400):
+    while (not is_touching_crown()):
         canvas.coords(BEARD_1, left_shoulder[0], left_shoulder[1], left_elbow[0] - i, left_elbow[1] - i, left_hand[0], left_hand[1] - i)
         canvas.coords(BEARD_6, right_shoulder[0], right_shoulder[1], right_elbow[0] + i, right_elbow[1] - i, right_hand[0], right_hand[1] - i)
         tk.update()
