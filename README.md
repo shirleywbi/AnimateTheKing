@@ -1,6 +1,16 @@
 # animate-king
 
-Animation of a cartoon king who:
-(1) kicks his feet up
-(2) throws off his crown
-(3) collapses
+Animation of a cartoon king who throws his crown and collapses
+
+Tech Stack:
+
+- Python Tkinter
+
+Why?
+
+- A bit of fun
+
+What I learnt:
+
+- Math for rotations
+- Basic Python
