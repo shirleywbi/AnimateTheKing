@@ -40,6 +40,7 @@ RIGHT_LEG_POS_X = RIGHT_FOOT_POS_X
 RIGHT_LEG_POS_Y = RIGHT_FOOT_POS_Y + (FOOT_HEIGHT / 2)
 
 # tags
+KING = "king"
 CROWN = "crown"
 BEARD_1 = "beard_1"
 BEARD_2 = "beard_2"
