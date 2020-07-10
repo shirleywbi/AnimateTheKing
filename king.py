@@ -49,7 +49,7 @@ def setup():
     canvas.create_line(0, FLOOR, CANVAS_WIDTH, FLOOR, fill="red") # Temporary floor line
 
 # Actions
-def beard_into_arms():
+def pick_up_crown_with_beard():
 
     left_arm = canvas.coords(BEARD_1)
     left_shoulder = (left_arm[0], left_arm[1])
@@ -90,22 +90,23 @@ def beard_into_arms():
         time.sleep(0.008)
         j += 1
 
-    # Lengthen arms and pick up crown #TODO
+    # Lengthen arms and pick up crown
     k = 0
+    k_rate = 1
+    crown_coords = canvas.coords(CROWN)
     while (not is_arm_extended()):
+        for c in range(len(crown_coords)):
+            if c % 2 != 0:
+                crown_coords[c] -= k_rate
+
         canvas.coords(BEARD_1, left_shoulder[0], left_shoulder[1], left_elbow[0] - i/4 + j, left_elbow[1] - i/4 - j, left_hand[0], left_hand[1] - i - j - k)
         canvas.coords(BEARD_6, right_shoulder[0], right_shoulder[1], right_elbow[0] + i/4 - j, right_elbow[1] - i/4 - j, right_hand[0], right_hand[1] - i - j - k)
+        canvas.coords(CROWN, crown_coords)
         tk.update()
         time.sleep(0.01)
-        k += 1
+        k += k_rate
 
     time.sleep(1)
-
-def move_crown_up():
-    for i in range(10, 0, -1):
-        canvas.move(CROWN, 0, -pow(i, 1.5))
-        tk.update()
-        time.sleep(0.05)
 
 # TODO: Add crown bounce on floor
 # TODO: Add dents
@@ -152,8 +153,7 @@ def collide_crown_with_beard():
         i += 0.1
 
 def animation():
-    beard_into_arms()
-    move_crown_up()
+    pick_up_crown_with_beard()
     collide_crown_with_beard()
 
 # TODO: Update to interupt and restart w/o completion
