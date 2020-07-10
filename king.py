@@ -110,13 +110,14 @@ def pick_up_crown_with_beard():
 
 # TODO: Add crown bounce on floor
 # TODO: Add dents
-# TODO: Postpone base collapse until in contact with crown
 def collide_crown_with_beard():
     i = 0
     fall_rate = 3
     angle_map = { BEARD_1: -3, BEARD_2: -4, BEARD_3: 5, BEARD_4: -3.5, BEARD_5: -4.9, BEARD_6: 4.2, BASE: 5.3}
-    beard_and_base = (BEARD_1, BEARD_2, BEARD_3, BEARD_4, BEARD_5, BEARD_6, BASE)
+    beard_list = (BEARD_1, BEARD_2, BEARD_3, BEARD_4, BEARD_5, BEARD_6)
+    beard_and_base_list = (BEARD_1, BEARD_2, BEARD_3, BEARD_4, BEARD_5, BEARD_6, BASE)
     drop_beard = False
+    drop_base = False
 
     def fall_and_rotate(item):
         if (not_on_floor(item)):
@@ -133,17 +134,25 @@ def collide_crown_with_beard():
         return False
 
     def collapse_beard():
-        if (at_least_one_not_on_floor(beard_and_base)):
-            for line in beard_and_base:
+        if (at_least_one_not_on_floor(beard_list)):
+            for line in beard_list:
                 fall_and_rotate(line)
 
-    while (canvas.coords(CROWN)[11] < FLOOR or at_least_one_not_on_floor(beard_and_base)):
+    def collapse_base():
+        if (not_on_floor(BASE)):
+            fall_and_rotate(BASE)
+
+    while (canvas.coords(CROWN)[11] < FLOOR or at_least_one_not_on_floor(beard_and_base_list)):
         if canvas.coords(CROWN)[11] < FLOOR:
             canvas.move(CROWN, 0, min(pow(i, 2), FLOOR - canvas.coords(CROWN)[11]))
         if canvas.coords(CROWN)[11] > canvas.coords(BEARD_1)[1]:
             drop_beard = True
+        if canvas.coords(CROWN)[11] > canvas.coords(BASE)[1]:
+            drop_base = True
         if drop_beard:
             collapse_beard()
+        if drop_base:
+            collapse_base()
         tk.update()
         time.sleep(0.015)
         i += 0.05
