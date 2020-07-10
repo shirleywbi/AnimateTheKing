@@ -46,8 +46,6 @@ def setup():
     canvas.create_line(BASE_POS_X, BASE_POS_Y, BASE_POS_X + BASE_WIDTH, BASE_POS_Y, tags=(BASE, KING), width=BASE_THICKNESS, fill=BASE_COLOR)
     canvas.tag_lower(BASE)
 
-    canvas.create_line(0, FLOOR, CANVAS_WIDTH, FLOOR, fill="red") # Temporary floor line
-
 # Actions
 def pick_up_crown_with_beard():
 
@@ -110,6 +108,7 @@ def pick_up_crown_with_beard():
 
 # TODO: Add crown bounce on floor
 # TODO: Add dents
+# TODO: Postpone base collapse until in contact with crown
 def collide_crown_with_beard():
     i = 0
     fall_rate = 3
@@ -136,27 +135,21 @@ def collide_crown_with_beard():
             for line in beard_and_base:
                 fall_and_rotate(line)
 
-    def pause_on_impact():
-        if (not drop_beard):
-            time.sleep(0.01)
-
     while (canvas.coords(CROWN)[11] < FLOOR or at_least_one_not_on_floor(beard_and_base)):
         if canvas.coords(CROWN)[11] < FLOOR:
-            canvas.move(CROWN, 0, min(pow(i, 1.2), FLOOR - canvas.coords(CROWN)[11]))
+            canvas.move(CROWN, 0, min(pow(i, 2), FLOOR - canvas.coords(CROWN)[11]))
         if canvas.coords(CROWN)[11] > canvas.coords(BEARD_1)[1]:
-            pause_on_impact()
             drop_beard = True
         if drop_beard:
             collapse_beard()
         tk.update()
-        time.sleep(0.01)
-        i += 0.1
+        time.sleep(0.015)
+        i += 0.05
 
 def animation():
     pick_up_crown_with_beard()
     collide_crown_with_beard()
 
-# TODO: Update to interupt and restart w/o completion
 def restart(event):
     canvas.delete('all')
     setup()
