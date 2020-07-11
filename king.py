@@ -212,14 +212,19 @@ def start_fire():
         canvas.coords(FIRE_RED, shrink_fire_coords(canvas.coords(FIRE_RED)))
         tk.update()
         time.sleep(0.02)
-    canvas.delete(FIRE)
 
     i, j, k = 0, -20, -40
     ash_color_inc = 0
     sleep_count = -40
     flatten_count = 0
-    # start_smoking = False
     while True:
+        # Fire turning to ash
+        if (ash_color_inc < 30):
+            util.to_greyscale(canvas, FIRE_YELLOW, "#FFD700", i * 10)
+            util.to_greyscale(canvas, FIRE_ORANGE, "#FFA500", i * 10)
+            util.to_greyscale(canvas, FIRE_RED, "#FF0000", i * 10)
+        if (ash_color_inc == 30):
+            canvas.delete(FIRE)
         # Create smoke
         if i == 0:
             create_smoke(SMOKE_1X, SMOKE_1Y, SMOKE_1)
