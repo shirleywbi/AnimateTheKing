@@ -108,8 +108,6 @@ def pick_up_crown_with_beard():
     canvas.coords(BEARD_6, right_shoulder[0], right_shoulder[1], right_hand[0], right_hand[1] - i - j - k)
     time.sleep(1)
 
-# TODO: Add crown bounce on floor
-# TODO: Add dents
 def collide_crown_with_beard():
     i = 0
     fall_rate = 3
@@ -157,9 +155,41 @@ def collide_crown_with_beard():
         time.sleep(0.015)
         i += 0.05
 
+def start_fire():
+    canvas.create_polygon(
+        canvas.coords(CROWN),
+        fill="red",
+        tags=FIRE_RED
+    )
+    canvas.create_polygon(
+        canvas.coords(CROWN),
+        fill="orange",
+        tags=FIRE_ORANGE
+    )
+    canvas.create_polygon(
+        canvas.coords(CROWN),
+        fill="gold",
+        tags=FIRE_YELLOW
+    )
+    canvas.delete(CROWN)
+    while (True):
+        new_coords_yellow = map(lambda x: x + random.randint(-3, 3), canvas.coords(FIRE_YELLOW))
+        new_coords_orange = map(lambda x: x + random.randint(-3, 3), canvas.coords(FIRE_ORANGE))
+        new_coords_red = map(lambda x: x + random.randint(-3, 3), canvas.coords(FIRE_RED))
+        canvas.coords(FIRE_YELLOW, list(new_coords_yellow))
+        canvas.coords(FIRE_ORANGE, list(new_coords_orange))
+        canvas.coords(FIRE_RED, list(new_coords_red))
+        tk.update()
+        time.sleep(0.01)
+
+    # Grows and burns out
+    # Fire extinguishes into grey ash 
+    return None
+
 def animation():
     pick_up_crown_with_beard()
     collide_crown_with_beard()
+    start_fire()
 
 def restart(event):
     canvas.delete('all')
