@@ -125,20 +125,27 @@ def collide_crown_with_beard():
         i += 0.05
 
 def start_fire():
-    # TODO: Prettify the fire
-    def expand_fire_coords(fire_coords):
+    def expand_fire_coords(fire_coords, big_delta, small_delta):
         new_fire_coords = list()
-        for i in range(len(fire_coords)):
-            if i == 0 or i == 12: # Horizontal, left edge
-                new_fire_coords.append(fire_coords[i] + random.randint(-3, 2))
-            elif i == 8 or i == 10: # Horizontal, right edge
-                new_fire_coords.append(fire_coords[i] + random.randint(-2, 3))
-            elif i < 10 and i % 2 == 1: # Vertical centers
-                new_fire_coords.append(min(fire_coords[i] + random.randint(-3, 2), FLOOR))
-            elif i % 2 == 0: # Horizontal centers
-                new_fire_coords.append(fire_coords[i] + random.randint(-2, 2))
-            else: # Vertical base
-                new_fire_coords.append(fire_coords[i])
+        for i in range(22):
+            if (i % 2 == 1): # Vertical movement
+                if i == 15 or i == 17: # Inner base
+                    new_fire_coords.append(fire_coords[i])
+                elif (i < 10): # Upper fire
+                    new_fire_coords.append(min(fire_coords[i] + random.randint(-big_delta, small_delta), FLOOR))
+                elif (i > 10): # Lower fire
+                    new_fire_coords.append(min(fire_coords[i] + random.randint(-small_delta, small_delta), FLOOR))
+            else: # Horizontal movement
+                if i == 0: new_fire_coords.append(fire_coords[i] + random.randint(-big_delta, small_delta))
+                if i == 2 or i == 4 or i == 6: new_fire_coords.append(fire_coords[i] + random.randint(-small_delta, small_delta))
+                if i == 8: new_fire_coords.append(max(fire_coords[i] + random.randint(-small_delta, big_delta), new_fire_coords[6] + 1))
+                if i == 10: new_fire_coords.append(max(fire_coords[i] + random.randint(-small_delta, big_delta), fire_coords[14] + 1))
+                if i == 12: new_fire_coords.append(max(fire_coords[i] + random.randint(-small_delta, small_delta), fire_coords[14] + 1))
+                if i == 14 or i == 16: new_fire_coords.append(fire_coords[i] + random.randint(-small_delta, small_delta))
+                if i == 18: new_fire_coords.append(min(fire_coords[i] + random.randint(-small_delta, small_delta), new_fire_coords[16] - 1))
+                if i == 20: new_fire_coords.append(min(fire_coords[i] + random.randint(-big_delta, small_delta), new_fire_coords[16] - 1))
+        new_fire_coords.append(new_fire_coords[0])
+        new_fire_coords.append(new_fire_coords[1])
         return new_fire_coords
 
     def shrink_fire_coords(fire_coords):
@@ -175,8 +182,18 @@ def start_fire():
         ]
 
     def create_fire(color, tag):
+        old_coords = canvas.coords(CROWN)
+        fire_coords = old_coords.copy()
+        fire_coords.insert(10, old_coords[8])
+        fire_coords.insert(11, (old_coords[9] + old_coords[11])/2)
+        fire_coords.insert(14, old_coords[2])
+        fire_coords.insert(15, old_coords[11])
+        fire_coords.insert(16, old_coords[6])
+        fire_coords.insert(17, old_coords[11])
+        fire_coords.insert(20, old_coords[0])
+        fire_coords.insert(21, fire_coords[11])
         canvas.create_polygon(
-            canvas.coords(CROWN),
+            fire_coords,
             fill=color,
             tags=(tag, FIRE)
         )
@@ -231,9 +248,9 @@ def start_fire():
             canvas.delete(SPARK_3)
             k = sleep_count
         # Fire grows
-        canvas.coords(FIRE_YELLOW, expand_fire_coords(canvas.coords(FIRE_YELLOW)))
-        canvas.coords(FIRE_ORANGE, expand_fire_coords(canvas.coords(FIRE_ORANGE)))
-        canvas.coords(FIRE_RED, expand_fire_coords(canvas.coords(FIRE_RED)))
+        canvas.coords(FIRE_YELLOW, expand_fire_coords(canvas.coords(FIRE_YELLOW), 2, 2))
+        canvas.coords(FIRE_ORANGE, expand_fire_coords(canvas.coords(FIRE_ORANGE), 3, 3))
+        canvas.coords(FIRE_RED, expand_fire_coords(canvas.coords(FIRE_RED), 4, 4))
         tk.update()
         time.sleep(0.015)
         i += 1
