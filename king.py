@@ -143,8 +143,6 @@ def start_fire():
                 new_fire_coords.append(fire_coords[i])
         return new_fire_coords
 
-    # TODO: Integrate the fire with the smoke coming out    
-    # TODO: stop points from overlapping that create empty spaces OR add small red shape in the back to fill in color
     def shrink_fire_coords(fire_coords):
         new_fire_coords = list()
         for i in range(len(fire_coords)):
@@ -169,6 +167,15 @@ def start_fire():
             x_offset + SMOKE_WIDTH / 2, y_offset
         ]
 
+    def get_spark_coords(x_offset, y_offset):
+        return [
+            x_offset + SPARK_WIDTH / 2, y_offset,
+            x_offset, y_offset + SPARK_HEIGHT / 2,
+            x_offset + SPARK_WIDTH / 2, y_offset + SPARK_HEIGHT,
+            x_offset + SPARK_WIDTH, y_offset + SPARK_HEIGHT / 2,
+            x_offset + SPARK_WIDTH / 2, y_offset
+        ]
+
     def create_fire(color, tag):
         canvas.create_polygon(
             canvas.coords(CROWN),
@@ -185,18 +192,51 @@ def start_fire():
 
     def create_spark(x_offset, y_offset, tag):
         canvas.create_polygon(
-            get_smoke_coords(x_offset, y_offset),
+            get_spark_coords(x_offset, y_offset),
             fill="orange",
             tags=tag
         )
 
     def flatten_item(item, thickness, dec):
         canvas.itemconfig(item, width=thickness - dec)
-    
+
     create_fire("red", FIRE_RED)
     create_fire("orange", FIRE_ORANGE)
     create_fire("gold", FIRE_YELLOW)
     canvas.delete(CROWN)
+
+    i, j, k = 0, -20, -40
+    sleep_count = -40
+    while True:
+        # Create spark
+        if i == 0:
+            create_spark(SMOKE_1X, SMOKE_1Y, SPARK_1)
+        if j == 0:
+            create_spark(SMOKE_2X, SMOKE_2Y, SPARK_2)
+        if k == 0:
+            create_spark(SMOKE_3X, SMOKE_3Y, SPARK_3)
+        # Move spark
+        if i >= 0:
+            canvas.coords(SPARK_1, get_spark_coords(SMOKE_1X, SMOKE_1Y - i))
+        if j >= 0:
+            canvas.coords(SPARK_2, get_spark_coords(SMOKE_2X, SMOKE_2Y - j))
+        if k >= 0:
+            canvas.coords(SPARK_3, get_spark_coords(SMOKE_3X, SMOKE_3Y - k))
+        # Remove spark
+        if i == 80:
+            canvas.delete(SPARK_1)
+            i = sleep_count
+        if j == 140:
+            canvas.delete(SPARK_2)
+            j = sleep_count
+        if k == 100:
+            canvas.delete(SPARK_3)
+            k = sleep_count
+        tk.update()
+        time.sleep(0.01)
+        i += 1
+        j += 1
+        k += 1
 
     # Grows and burns out
     for i in range(100):
@@ -268,6 +308,7 @@ def start_fire():
 def animation():
     pick_up_crown_with_beard()
     collide_crown_with_beard()
+    time.sleep(1)
     start_fire()
 
 def restart(event):

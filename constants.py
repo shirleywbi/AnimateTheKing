@@ -38,6 +38,9 @@ SMOKE_2Y = SMOKE_Y_OFFSET + CANVAS_HEIGHT * 0.3
 SMOKE_3X = SMOKE_X_OFFSET + CANVAS_WIDTH * 0.3
 SMOKE_3Y = SMOKE_Y_OFFSET + CANVAS_HEIGHT * 0.1
 
+SPARK_WIDTH = 5
+SPARK_HEIGHT = 20
+
 # tags
 KING = "king"
 CROWN = "crown"
@@ -55,3 +58,6 @@ FIRE_RED = "fire_red"
 SMOKE_1 = "smoke_1"
 SMOKE_2 = "smoke_2"
 SMOKE_3 = "smoke_3"
+SPARK_1 = "spark_1"
+SPARK_2 = "spark_2"
+SPARK_3 = "spark_3"
