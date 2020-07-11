@@ -158,52 +158,23 @@ def collide_crown_with_beard():
 
 def start_fire():
 
-    def expand_fire_coords():
-        return None
+    def expand_fire_coords(fire_coords):
+        new_fire_coords = list()
+        for i in range(len(fire_coords)):
+            if (i == 11 or i == 13):
+                new_fire_coords.append(fire_coords[i])
+            else:
+                new_fire_coords.append(fire_coords[i] + random.randint(-2, 5))
+        return new_fire_coords
 
-    def shrink_fire_coords():
-        return None
-
-    canvas.create_polygon(
-        canvas.coords(CROWN),
-        fill="red",
-        tags=FIRE_RED
-    )
-    canvas.create_polygon(
-        canvas.coords(CROWN),
-        fill="orange",
-        tags=FIRE_ORANGE
-    )
-    canvas.create_polygon(
-        canvas.coords(CROWN),
-        fill="gold",
-        tags=FIRE_YELLOW
-    )
-    canvas.delete(CROWN)
-
-    # Grows and burns out
-    for i in range(100):
-        new_coords_yellow = map(lambda x: x + random.randint(0, 3), canvas.coords(FIRE_YELLOW))
-        new_coords_orange = map(lambda x: x + random.randint(0, 3), canvas.coords(FIRE_ORANGE))
-        new_coords_red = map(lambda x: x + random.randint(0, 3), canvas.coords(FIRE_RED))
-        canvas.coords(FIRE_YELLOW, list(new_coords_yellow))
-        canvas.coords(FIRE_ORANGE, list(new_coords_orange))
-        canvas.coords(FIRE_RED, list(new_coords_red))
-        tk.update()
-        time.sleep(0.01)
-
-    for i in range(100):
-        new_coords_yellow = map(lambda x: x + random.randint(-3, -1), canvas.coords(FIRE_YELLOW))
-        new_coords_orange = map(lambda x: x + random.randint(-3, -1), canvas.coords(FIRE_ORANGE))
-        new_coords_red = map(lambda x: x + random.randint(-3, -1), canvas.coords(FIRE_RED))
-        canvas.coords(FIRE_YELLOW, list(new_coords_yellow))
-        canvas.coords(FIRE_ORANGE, list(new_coords_orange))
-        canvas.coords(FIRE_RED, list(new_coords_red))
-        tk.update()
-        time.sleep(0.01)
-
-    # if (shrunken):
-    #     return None
+    def shrink_fire_coords(fire_coords):
+        new_fire_coords = list()
+        for i in range(len(fire_coords)):
+            if (i == 11 or i == 13):
+                new_fire_coords.append(fire_coords[i])
+            else:
+                new_fire_coords.append(fire_coords[i] + random.randint(-5, 2))
+        return new_fire_coords
 
     def get_smoke_coords(x_offset, y_offset):
         return [
@@ -237,6 +208,38 @@ def start_fire():
 
     def flatten_item(item, thickness, dec):
         canvas.itemconfig(item, width=thickness - dec)
+
+    canvas.create_polygon(
+        canvas.coords(CROWN),
+        fill="red",
+        tags=FIRE_RED
+    )
+    canvas.create_polygon(
+        canvas.coords(CROWN),
+        fill="orange",
+        tags=FIRE_ORANGE
+    )
+    canvas.create_polygon(
+        canvas.coords(CROWN),
+        fill="gold",
+        tags=FIRE_YELLOW
+    )
+    canvas.delete(CROWN)
+
+    # Grows and burns out
+    for i in range(100):
+        canvas.coords(FIRE_YELLOW, expand_fire_coords(canvas.coords(FIRE_YELLOW)))
+        canvas.coords(FIRE_ORANGE, expand_fire_coords(canvas.coords(FIRE_ORANGE)))
+        canvas.coords(FIRE_RED, expand_fire_coords(canvas.coords(FIRE_RED)))
+        tk.update()
+        time.sleep(0.01)
+
+    for i in range(100):
+        canvas.coords(FIRE_YELLOW, shrink_fire_coords(canvas.coords(FIRE_YELLOW)))
+        canvas.coords(FIRE_ORANGE, shrink_fire_coords(canvas.coords(FIRE_ORANGE)))
+        canvas.coords(FIRE_RED, shrink_fire_coords(canvas.coords(FIRE_RED)))
+        tk.update()
+        time.sleep(0.01)
 
     i, j, k = 0, -20, -40
     ash_color_inc = 0
