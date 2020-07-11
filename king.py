@@ -125,9 +125,9 @@ def collide_crown_with_beard():
         i += 0.05
 
 def start_fire():
-    def expand_fire_coords(fire_coords, big_delta, small_delta):
+    def resize_fire_coords(fire_coords, big_delta, small_delta):
         new_fire_coords = list()
-        for i in range(22):
+        for i in range(len(fire_coords) - 2):
             if (i % 2 == 1): # Vertical movement
                 if i == 15 or i == 17: # Inner base
                     new_fire_coords.append(fire_coords[i])
@@ -146,21 +146,6 @@ def start_fire():
                 if i == 20: new_fire_coords.append(min(fire_coords[i] + random.randint(-big_delta, small_delta), new_fire_coords[16] - 1))
         new_fire_coords.append(new_fire_coords[0])
         new_fire_coords.append(new_fire_coords[1])
-        return new_fire_coords
-
-    def shrink_fire_coords(fire_coords):
-        new_fire_coords = list()
-        for i in range(len(fire_coords)):
-            if i == 0 or i == 2 or i == 12: # Horizontal, left side
-                new_fire_coords.append(fire_coords[i] + random.randint(2, 3))
-            elif i == 6 or i == 8 or i == 10: # Horizontal, right side
-                new_fire_coords.append(fire_coords[i] + random.randint(-3, -2))
-            elif i < 10 and i % 2 == 1: # Vertical centers
-                new_fire_coords.append(min(fire_coords[i] + random.randint(2, 3), FLOOR))
-            elif i % 2 == 0: # Horizontal centers
-                new_fire_coords.append(fire_coords[i] + random.randint(-1, 1))
-            else: # Vertical base
-                new_fire_coords.append(fire_coords[i])
         return new_fire_coords
 
     def get_smoke_coords(x_offset, y_offset):
@@ -248,9 +233,9 @@ def start_fire():
             canvas.delete(SPARK_3)
             k = sleep_count
         # Fire grows
-        canvas.coords(FIRE_YELLOW, expand_fire_coords(canvas.coords(FIRE_YELLOW), 2, 2))
-        canvas.coords(FIRE_ORANGE, expand_fire_coords(canvas.coords(FIRE_ORANGE), 3, 3))
-        canvas.coords(FIRE_RED, expand_fire_coords(canvas.coords(FIRE_RED), 4, 4))
+        canvas.coords(FIRE_YELLOW, resize_fire_coords(canvas.coords(FIRE_YELLOW), 2, 2))
+        canvas.coords(FIRE_ORANGE, resize_fire_coords(canvas.coords(FIRE_ORANGE), 3, 3))
+        canvas.coords(FIRE_RED, resize_fire_coords(canvas.coords(FIRE_RED), 4, 4))
         tk.update()
         time.sleep(0.015)
         i += 1
@@ -260,10 +245,10 @@ def start_fire():
     canvas.delete(SPARK_1, SPARK_2, SPARK_3)
 
     # Fire shrinks
-    for i in range(30):
-        canvas.coords(FIRE_YELLOW, shrink_fire_coords(canvas.coords(FIRE_YELLOW)))
-        canvas.coords(FIRE_ORANGE, shrink_fire_coords(canvas.coords(FIRE_ORANGE)))
-        canvas.coords(FIRE_RED, shrink_fire_coords(canvas.coords(FIRE_RED)))
+    for i in range(40):
+        canvas.coords(FIRE_YELLOW, resize_fire_coords(canvas.coords(FIRE_YELLOW), 1, 3))
+        canvas.coords(FIRE_ORANGE, resize_fire_coords(canvas.coords(FIRE_ORANGE), 2, 4))
+        canvas.coords(FIRE_RED, resize_fire_coords(canvas.coords(FIRE_RED), 3, 5))
         tk.update()
         time.sleep(0.02)
 
