@@ -126,8 +126,8 @@ def collide_crown_with_beard():
         i += 0.05
 
 def start_fire():
-    # TODO: Add fire diamonds
     # TODO: Prettify the fire
+    # TODO: Hold fire still once max_size
     def expand_fire_coords(fire_coords):
         new_fire_coords = list()
         for i in range(len(fire_coords)):
@@ -207,7 +207,7 @@ def start_fire():
 
     i, j, k = 0, -20, -40
     sleep_count = -40
-    while True:
+    for count in range(100):
         # Create spark
         if i == 0:
             create_spark(SMOKE_1X, SMOKE_1Y, SPARK_1)
@@ -232,20 +232,19 @@ def start_fire():
         if k == 100:
             canvas.delete(SPARK_3)
             k = sleep_count
+        # Fire grows
+        canvas.coords(FIRE_YELLOW, expand_fire_coords(canvas.coords(FIRE_YELLOW)))
+        canvas.coords(FIRE_ORANGE, expand_fire_coords(canvas.coords(FIRE_ORANGE)))
+        canvas.coords(FIRE_RED, expand_fire_coords(canvas.coords(FIRE_RED)))
         tk.update()
         time.sleep(0.01)
         i += 1
         j += 1
         k += 1
 
-    # Grows and burns out
-    for i in range(100):
-        canvas.coords(FIRE_YELLOW, expand_fire_coords(canvas.coords(FIRE_YELLOW)))
-        canvas.coords(FIRE_ORANGE, expand_fire_coords(canvas.coords(FIRE_ORANGE)))
-        canvas.coords(FIRE_RED, expand_fire_coords(canvas.coords(FIRE_RED)))
-        tk.update()
-        time.sleep(0.015)
+    canvas.delete(SPARK_1, SPARK_2, SPARK_3)
 
+    # Fire shrinks
     for i in range(30):
         canvas.coords(FIRE_YELLOW, shrink_fire_coords(canvas.coords(FIRE_YELLOW)))
         canvas.coords(FIRE_ORANGE, shrink_fire_coords(canvas.coords(FIRE_ORANGE)))
