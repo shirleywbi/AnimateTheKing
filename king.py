@@ -157,23 +157,38 @@ def collide_crown_with_beard():
         i += 0.05
 
 def start_fire():
-
+    # TODO: Add fire diamonds
+    # TODO: Prettify the fire
     def expand_fire_coords(fire_coords):
         new_fire_coords = list()
         for i in range(len(fire_coords)):
-            if (i == 11 or i == 13):
+            if i == 0 or i == 12: # Horizontal, left edge
+                new_fire_coords.append(fire_coords[i] + random.randint(-3, 2))
+            elif i == 8 or i == 10: # Horizontal, right edge
+                new_fire_coords.append(fire_coords[i] + random.randint(-2, 3))
+            elif i < 10 and i % 2 == 1: # Vertical centers
+                new_fire_coords.append(min(fire_coords[i] + random.randint(-3, 2), FLOOR))
+            elif i % 2 == 0: # Horizontal centers
+                new_fire_coords.append(fire_coords[i] + random.randint(-2, 2))
+            else: # Vertical base
                 new_fire_coords.append(fire_coords[i])
-            else:
-                new_fire_coords.append(fire_coords[i] + random.randint(-2, 5))
         return new_fire_coords
 
+    # TODO: Integrate the fire with the smoke coming out    
+    # TODO: stop points from overlapping that create empty spaces OR add small red shape in the back to fill in color
     def shrink_fire_coords(fire_coords):
         new_fire_coords = list()
         for i in range(len(fire_coords)):
-            if (i == 11 or i == 13):
+            if i == 0 or i == 2 or i == 12: # Horizontal, left side
+                new_fire_coords.append(fire_coords[i] + random.randint(2, 3))
+            elif i == 6 or i == 8 or i == 10: # Horizontal, right side
+                new_fire_coords.append(fire_coords[i] + random.randint(-3, -2))
+            elif i < 10 and i % 2 == 1: # Vertical centers
+                new_fire_coords.append(min(fire_coords[i] + random.randint(2, 3), FLOOR))
+            elif i % 2 == 0: # Horizontal centers
+                new_fire_coords.append(fire_coords[i] + random.randint(-1, 1))
+            else: # Vertical base
                 new_fire_coords.append(fire_coords[i])
-            else:
-                new_fire_coords.append(fire_coords[i] + random.randint(-5, 2))
         return new_fire_coords
 
     def get_smoke_coords(x_offset, y_offset):
@@ -212,17 +227,17 @@ def start_fire():
     canvas.create_polygon(
         canvas.coords(CROWN),
         fill="red",
-        tags=FIRE_RED
+        tags=(FIRE_RED, FIRE)
     )
     canvas.create_polygon(
         canvas.coords(CROWN),
         fill="orange",
-        tags=FIRE_ORANGE
+        tags=(FIRE_ORANGE, FIRE)
     )
     canvas.create_polygon(
         canvas.coords(CROWN),
         fill="gold",
-        tags=FIRE_YELLOW
+        tags=(FIRE_YELLOW, FIRE)
     )
     canvas.delete(CROWN)
 
@@ -232,14 +247,15 @@ def start_fire():
         canvas.coords(FIRE_ORANGE, expand_fire_coords(canvas.coords(FIRE_ORANGE)))
         canvas.coords(FIRE_RED, expand_fire_coords(canvas.coords(FIRE_RED)))
         tk.update()
-        time.sleep(0.01)
+        time.sleep(0.015)
 
-    for i in range(100):
+    for i in range(30):
         canvas.coords(FIRE_YELLOW, shrink_fire_coords(canvas.coords(FIRE_YELLOW)))
         canvas.coords(FIRE_ORANGE, shrink_fire_coords(canvas.coords(FIRE_ORANGE)))
         canvas.coords(FIRE_RED, shrink_fire_coords(canvas.coords(FIRE_RED)))
         tk.update()
-        time.sleep(0.01)
+        time.sleep(0.02)
+    canvas.delete(FIRE)
 
     i, j, k = 0, -20, -40
     ash_color_inc = 0
