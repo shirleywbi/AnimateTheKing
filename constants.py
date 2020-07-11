@@ -26,6 +26,16 @@ BASE_POS_X = IMAGE_OFFSET_X
 BASE_POS_Y = BEARD_POS_Y + BEARD_LENGTH + BASE_SPACE_Y + BASE_THICKNESS / 2
 BASE_WIDTH = CROWN_SUB_WIDTH * 4
 
+SMOKE_COLOR = "white" #"#F3F3F3"
+SMOKE_WIDTH = 20
+SMOKE_HEIGHT = 50
+SMOKE_1X = 100
+SMOKE_1Y = 100
+SMOKE_2X = 200
+SMOKE_2Y = 150
+SMOKE_3X = 150
+SMOKE_3Y = 50
+
 # tags
 KING = "king"
 CROWN = "crown"
@@ -39,3 +49,6 @@ BASE = "base"
 FIRE_YELLOW = "fire_yellow"
 FIRE_ORANGE = "fire_orange"
 FIRE_RED = "fire_red"
+SMOKE_1 = "smoke_1"
+SMOKE_2 = "smoke_2"
+SMOKE_3 = "smoke_3"

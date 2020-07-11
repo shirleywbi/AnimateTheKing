@@ -156,6 +156,13 @@ def collide_crown_with_beard():
         i += 0.05
 
 def start_fire():
+
+    def expand_fire_coords():
+        return None
+
+    def shrink_fire_coords():
+        return None
+
     canvas.create_polygon(
         canvas.coords(CROWN),
         fill="red",
@@ -172,15 +179,78 @@ def start_fire():
         tags=FIRE_YELLOW
     )
     canvas.delete(CROWN)
-    while (True):
-        new_coords_yellow = map(lambda x: x + random.randint(-3, 3), canvas.coords(FIRE_YELLOW))
-        new_coords_orange = map(lambda x: x + random.randint(-3, 3), canvas.coords(FIRE_ORANGE))
-        new_coords_red = map(lambda x: x + random.randint(-3, 3), canvas.coords(FIRE_RED))
+    for i in range(100):
+        new_coords_yellow = map(lambda x: x + random.randint(0, 3), canvas.coords(FIRE_YELLOW))
+        new_coords_orange = map(lambda x: x + random.randint(0, 3), canvas.coords(FIRE_ORANGE))
+        new_coords_red = map(lambda x: x + random.randint(0, 3), canvas.coords(FIRE_RED))
         canvas.coords(FIRE_YELLOW, list(new_coords_yellow))
         canvas.coords(FIRE_ORANGE, list(new_coords_orange))
         canvas.coords(FIRE_RED, list(new_coords_red))
         tk.update()
         time.sleep(0.01)
+
+    for i in range(100):
+        # TODO: Color of logs and branches should darken to dark ash, thickness decreasing
+        new_coords_yellow = map(lambda x: x + random.randint(-3, -1), canvas.coords(FIRE_YELLOW))
+        new_coords_orange = map(lambda x: x + random.randint(-3, -1), canvas.coords(FIRE_ORANGE))
+        new_coords_red = map(lambda x: x + random.randint(-3, -1), canvas.coords(FIRE_RED))
+        canvas.coords(FIRE_YELLOW, list(new_coords_yellow))
+        canvas.coords(FIRE_ORANGE, list(new_coords_orange))
+        canvas.coords(FIRE_RED, list(new_coords_red))
+        tk.update()
+        time.sleep(0.01)
+
+    # if (shrunken):
+    #     return None
+
+    def get_smoke_coords(x_offset, y_offset):
+        return [
+            x_offset + SMOKE_WIDTH / 2, y_offset,
+            x_offset, y_offset + SMOKE_HEIGHT / 2,
+            x_offset + SMOKE_WIDTH / 2, y_offset + SMOKE_HEIGHT,
+            x_offset + SMOKE_WIDTH, y_offset + SMOKE_HEIGHT / 2,
+            x_offset + SMOKE_WIDTH / 2, y_offset
+        ]
+
+    def create_smoke(x_offset, y_offset, tag):
+        canvas.create_polygon(
+            get_smoke_coords(x_offset, y_offset),
+            fill=SMOKE_COLOR,
+            tags=tag
+        )
+
+    i, j, k = 0, -20, -40
+    sleep_count = -40
+    while True:
+        # Create smoke
+        if i == 0:
+            create_smoke(SMOKE_1X, SMOKE_1Y, SMOKE_1)
+        if j == 0:
+            create_smoke(SMOKE_2X, SMOKE_2Y, SMOKE_2)
+        if k == 0:
+            create_smoke(SMOKE_3X, SMOKE_3Y, SMOKE_3)
+        # Move smoke
+        if i >= 0:
+            canvas.coords(SMOKE_1, get_smoke_coords(SMOKE_1X, SMOKE_1Y - i))
+        if j >= 0:
+            canvas.coords(SMOKE_2, get_smoke_coords(SMOKE_2X, SMOKE_2Y - j))
+        if k >= 0:
+            canvas.coords(SMOKE_3, get_smoke_coords(SMOKE_3X, SMOKE_3Y - k))
+        # Remove smoke
+        if i == 80:
+            canvas.delete(SMOKE_1)
+            i = sleep_count
+        if j == 140:
+            canvas.delete(SMOKE_2)
+            j = sleep_count
+        if k == 100:
+            canvas.delete(SMOKE_3)
+            k = sleep_count
+        tk.update()
+        time.sleep(0.01)
+        i += 1
+        j += 1
+        k += 1
 
     # Grows and burns out
     # Fire extinguishes into grey ash 
