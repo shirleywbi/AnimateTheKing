@@ -2,6 +2,8 @@ import tkinter as tkr
 import random
 import time
 import action_helpers as action
+import setup
+import util
 from constants import *
 
 
@@ -15,39 +17,6 @@ beard_list = (BEARD_1, BEARD_2, BEARD_3, BEARD_4, BEARD_5, BEARD_6)
 beard_and_base_list = (BEARD_1, BEARD_2, BEARD_3, BEARD_4, BEARD_5, BEARD_6, BASE)
 
 # Initialize images
-def setup():
-
-    def create_beard(count, tag):
-        canvas.create_line(BEARD_POS_X + BEARD_SPACE * count, BEARD_POS_Y, BEARD_POS_X + BEARD_SPACE * count, BEARD_POS_Y + BEARD_LENGTH,
-            tags=(tag, KING), width=BEARD_THICKNESS, fill=BEARD_COLOR, cap="round", join="round")
-
-    def create_beard_arm(count, tag):
-        x = BEARD_POS_X + BEARD_SPACE * count
-        canvas.create_line(x, BEARD_POS_Y, x, BEARD_POS_Y + BEARD_LENGTH / 2, x, BEARD_POS_Y + BEARD_LENGTH,
-            tags=(tag, KING), width=BEARD_THICKNESS, fill=BEARD_COLOR, cap="round", join="round")
-
-    canvas.create_polygon(
-        IMAGE_OFFSET_X + CROWN_SUB_WIDTH * 0, CROWN_MID_POINT,
-        IMAGE_OFFSET_X + CROWN_SUB_WIDTH * 1, CROWN_LOW_POINT,
-        IMAGE_OFFSET_X + CROWN_SUB_WIDTH * 2, CROWN_HIGH_POINT,
-        IMAGE_OFFSET_X + CROWN_SUB_WIDTH * 3, CROWN_LOW_POINT,
-        IMAGE_OFFSET_X + CROWN_SUB_WIDTH * 4, CROWN_MID_POINT,
-        IMAGE_OFFSET_X + CROWN_SUB_WIDTH * 4, CROWN_HEIGHT,
-        IMAGE_OFFSET_X + CROWN_SUB_WIDTH * 0, CROWN_HEIGHT,
-        IMAGE_OFFSET_X + CROWN_SUB_WIDTH * 0, CROWN_MID_POINT,
-        fill="gold",
-        tags=(CROWN, KING)
-    )
-
-    create_beard_arm(0, BEARD_1)
-    create_beard(1, BEARD_2)
-    create_beard(2, BEARD_3)
-    create_beard(3, BEARD_4)
-    create_beard(4, BEARD_5)
-    create_beard_arm(5, BEARD_6)
-
-    canvas.create_line(BASE_POS_X, BASE_POS_Y, BASE_POS_X + BASE_WIDTH, BASE_POS_Y, tags=(BASE, KING), width=BASE_THICKNESS, fill=BASE_COLOR)
-    canvas.tag_lower(BASE)
 
 # Actions
 def pick_up_crown_with_beard():
@@ -200,6 +169,13 @@ def start_fire():
             x_offset + SMOKE_WIDTH / 2, y_offset
         ]
 
+    def create_fire(color, tag):
+        canvas.create_polygon(
+            canvas.coords(CROWN),
+            fill=color,
+            tags=(tag, FIRE)
+        )
+
     def create_smoke(x_offset, y_offset, tag):
         canvas.create_polygon(
             get_smoke_coords(x_offset, y_offset),
@@ -207,38 +183,19 @@ def start_fire():
             tags=tag
         )
 
-    def hex_to_rgb(hex):
-        h = hex.lstrip('#')
-        return tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
-
-    def rgb_to_hex(rgb):
-        return "#%02x%02x%02x" % rgb
-
-    def to_greyscale(item, hex, inc):
-        old_rgb = hex_to_rgb(hex)
-        max_rgb = max(old_rgb)
-        new_rgb = tuple(map(lambda x: x + min(inc, max_rgb - x) if (x < max_rgb) else x, old_rgb))
-        new_hex = rgb_to_hex(new_rgb)
-        canvas.itemconfig(item, fill=new_hex)
+    def create_spark(x_offset, y_offset, tag):
+        canvas.create_polygon(
+            get_smoke_coords(x_offset, y_offset),
+            fill="orange",
+            tags=tag
+        )
 
     def flatten_item(item, thickness, dec):
         canvas.itemconfig(item, width=thickness - dec)
-
-    canvas.create_polygon(
-        canvas.coords(CROWN),
-        fill="red",
-        tags=(FIRE_RED, FIRE)
-    )
-    canvas.create_polygon(
-        canvas.coords(CROWN),
-        fill="orange",
-        tags=(FIRE_ORANGE, FIRE)
-    )
-    canvas.create_polygon(
-        canvas.coords(CROWN),
-        fill="gold",
-        tags=(FIRE_YELLOW, FIRE)
-    )
+    
+    create_fire("red", FIRE_RED)
+    create_fire("orange", FIRE_ORANGE)
+    create_fire("gold", FIRE_YELLOW)
     canvas.delete(CROWN)
 
     # Grows and burns out
@@ -288,11 +245,11 @@ def start_fire():
             canvas.delete(SMOKE_3)
             k = sleep_count
         # Convert to ash
-        to_greyscale(BASE, BASE_COLOR, ash_color_inc)
+        util.to_greyscale(canvas, BASE, BASE_COLOR, ash_color_inc)
         if (flatten_count < 3):
             flatten_item(BASE, BASE_THICKNESS, 1)
         for beard in beard_list:
-            to_greyscale(beard, BEARD_COLOR, ash_color_inc)
+            util.to_greyscale(canvas, beard, BEARD_COLOR, ash_color_inc)
             if (flatten_count < 3):
                 flatten_item(beard, BEARD_THICKNESS, 1)
         tk.update()
@@ -310,9 +267,9 @@ def animation():
 
 def restart(event):
     canvas.delete('all')
-    setup()
+    setup.setup(canvas)
     animation()
 
-setup()
+setup.setup(canvas)
 tk.bind('<space>', restart)
 tk.mainloop()
