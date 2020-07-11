@@ -11,6 +11,9 @@ canvas = tkr.Canvas(tk, width=CANVAS_WIDTH, height=CANVAS_HEIGHT)
 tk.title("King")
 canvas.pack()
 
+beard_list = (BEARD_1, BEARD_2, BEARD_3, BEARD_4, BEARD_5, BEARD_6)
+beard_and_base_list = (BEARD_1, BEARD_2, BEARD_3, BEARD_4, BEARD_5, BEARD_6, BASE)
+
 # Initialize images
 def setup():
 
@@ -112,8 +115,6 @@ def collide_crown_with_beard():
     i = 0
     fall_rate = 3
     angle_map = { BEARD_1: -3, BEARD_2: -4, BEARD_3: 5, BEARD_4: -3.5, BEARD_5: -4.9, BEARD_6: 4.2, BASE: 5.3}
-    beard_list = (BEARD_1, BEARD_2, BEARD_3, BEARD_4, BEARD_5, BEARD_6)
-    beard_and_base_list = (BEARD_1, BEARD_2, BEARD_3, BEARD_4, BEARD_5, BEARD_6, BASE)
     drop_beard = False
     drop_base = False
 
@@ -224,20 +225,19 @@ def start_fire():
         return tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
 
     def rgb_to_hex(rgb):
-        print(rgb)
         return "#%02x%02x%02x" % rgb
 
-    def to_greyscale(hex, inc):
+    def to_greyscale(item, hex, inc):
         old_rgb = hex_to_rgb(hex)
         max_rgb = max(old_rgb)
         new_rgb = tuple(map(lambda x: x + min(inc, max_rgb - x) if (x < max_rgb) else x, old_rgb))
         new_hex = rgb_to_hex(new_rgb)
-        canvas.itemconfig(KING, fill=new_hex)
-
-    to_greyscale(BASE_COLOR, 100)
+        canvas.itemconfig(item, fill=new_hex)
 
     i, j, k = 0, -20, -40
+    ash_color_inc = 0
     sleep_count = -40
+    # start_smoking = False
     while True:
         # Create smoke
         if i == 0:
@@ -263,14 +263,18 @@ def start_fire():
         if k == 100:
             canvas.delete(SMOKE_3)
             k = sleep_count
+        # Convert to ash
+        to_greyscale(BASE, BASE_COLOR, ash_color_inc)
+        for beard in beard_list:
+            to_greyscale(beard, BEARD_COLOR, ash_color_inc)
         tk.update()
         time.sleep(0.01)
         i += 1
         j += 1
         k += 1
+        ash_color_inc += 1
 
     # Grows and burns out
-    # Fire extinguishes into grey ash 
     return None
 
 def animation():
