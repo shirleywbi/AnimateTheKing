@@ -78,7 +78,6 @@ def pick_up_crown_with_beard():
 
     canvas.coords(BEARD_1, left_shoulder[0], left_shoulder[1], left_hand[0], left_hand[1] - i - j - k)
     canvas.coords(BEARD_6, right_shoulder[0], right_shoulder[1], right_hand[0], right_hand[1] - i - j - k)
-    time.sleep(1)
 
 def collide_crown_with_beard():
     i = 0
@@ -127,7 +126,6 @@ def collide_crown_with_beard():
 
 def start_fire():
     # TODO: Prettify the fire
-    # TODO: Hold fire still once max_size
     def expand_fire_coords(fire_coords):
         new_fire_coords = list()
         for i in range(len(fire_coords)):
@@ -207,7 +205,7 @@ def start_fire():
 
     i, j, k = 0, -20, -40
     sleep_count = -40
-    for count in range(100):
+    for count in range(130):
         # Create spark
         if i == 0:
             create_spark(SMOKE_1X, SMOKE_1Y, SPARK_1)
@@ -237,7 +235,7 @@ def start_fire():
         canvas.coords(FIRE_ORANGE, expand_fire_coords(canvas.coords(FIRE_ORANGE)))
         canvas.coords(FIRE_RED, expand_fire_coords(canvas.coords(FIRE_RED)))
         tk.update()
-        time.sleep(0.01)
+        time.sleep(0.015)
         i += 1
         j += 1
         k += 1
@@ -306,8 +304,9 @@ def start_fire():
 
 def animation():
     pick_up_crown_with_beard()
+    time.sleep(0.3)
     collide_crown_with_beard()
-    time.sleep(1)
+    time.sleep(0.1)
     start_fire()
 
 def restart(event):
