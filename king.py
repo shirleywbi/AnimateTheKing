@@ -180,6 +180,8 @@ def start_fire():
         tags=FIRE_YELLOW
     )
     canvas.delete(CROWN)
+
+    # Grows and burns out
     for i in range(100):
         new_coords_yellow = map(lambda x: x + random.randint(0, 3), canvas.coords(FIRE_YELLOW))
         new_coords_orange = map(lambda x: x + random.randint(0, 3), canvas.coords(FIRE_ORANGE))
@@ -191,7 +193,6 @@ def start_fire():
         time.sleep(0.01)
 
     for i in range(100):
-        # TODO: Color of logs and branches should darken to dark ash, thickness decreasing
         new_coords_yellow = map(lambda x: x + random.randint(-3, -1), canvas.coords(FIRE_YELLOW))
         new_coords_orange = map(lambda x: x + random.randint(-3, -1), canvas.coords(FIRE_ORANGE))
         new_coords_red = map(lambda x: x + random.randint(-3, -1), canvas.coords(FIRE_RED))
@@ -234,9 +235,13 @@ def start_fire():
         new_hex = rgb_to_hex(new_rgb)
         canvas.itemconfig(item, fill=new_hex)
 
+    def flatten_item(item, thickness, dec):
+        canvas.itemconfig(item, width=thickness - dec)
+
     i, j, k = 0, -20, -40
     ash_color_inc = 0
     sleep_count = -40
+    flatten_count = 0
     # start_smoking = False
     while True:
         # Create smoke
@@ -265,17 +270,19 @@ def start_fire():
             k = sleep_count
         # Convert to ash
         to_greyscale(BASE, BASE_COLOR, ash_color_inc)
+        if (flatten_count < 3):
+            flatten_item(BASE, BASE_THICKNESS, 1)
         for beard in beard_list:
             to_greyscale(beard, BEARD_COLOR, ash_color_inc)
+            if (flatten_count < 3):
+                flatten_item(beard, BEARD_THICKNESS, 1)
         tk.update()
         time.sleep(0.01)
         i += 1
         j += 1
         k += 1
         ash_color_inc += 1
-
-    # Grows and burns out
-    return None
+        flatten_count += 1
 
 def animation():
     pick_up_crown_with_beard()
