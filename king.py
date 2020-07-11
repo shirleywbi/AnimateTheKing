@@ -124,38 +124,30 @@ def collide_crown_with_beard():
         time.sleep(0.015)
         i += 0.05
 
-def start_fire():
-    def resize_fire_coords(fire_coords, big_delta, small_delta):
-        new_fire_coords = list()
-        for i in range(len(fire_coords) - 2):
-            if (i % 2 == 1): # Vertical movement
-                if i == 15 or i == 17: # Inner base
-                    new_fire_coords.append(fire_coords[i])
-                elif (i < 10): # Upper fire
-                    new_fire_coords.append(min(fire_coords[i] + random.randint(-big_delta, small_delta), FLOOR))
-                elif (i > 10): # Lower fire
-                    new_fire_coords.append(min(fire_coords[i] + random.randint(-small_delta, small_delta), FLOOR))
-            else: # Horizontal movement
-                if i == 0: new_fire_coords.append(fire_coords[i] + random.randint(-big_delta, small_delta))
-                if i == 2 or i == 4 or i == 6: new_fire_coords.append(fire_coords[i] + random.randint(-small_delta, small_delta))
-                if i == 8: new_fire_coords.append(max(fire_coords[i] + random.randint(-small_delta, big_delta), new_fire_coords[6] + 1))
-                if i == 10: new_fire_coords.append(max(fire_coords[i] + random.randint(-small_delta, big_delta), fire_coords[14] + 1))
-                if i == 12: new_fire_coords.append(max(fire_coords[i] + random.randint(-small_delta, small_delta), fire_coords[14] + 1))
-                if i == 14 or i == 16: new_fire_coords.append(fire_coords[i] + random.randint(-small_delta, small_delta))
-                if i == 18: new_fire_coords.append(min(fire_coords[i] + random.randint(-small_delta, small_delta), new_fire_coords[16] - 1))
-                if i == 20: new_fire_coords.append(min(fire_coords[i] + random.randint(-big_delta, small_delta), new_fire_coords[16] - 1))
-        new_fire_coords.append(new_fire_coords[0])
-        new_fire_coords.append(new_fire_coords[1])
-        return new_fire_coords
+def resize_fire_coords(fire_coords, big_delta, small_delta):
+    new_fire_coords = list()
+    for i in range(len(fire_coords) - 2):
+        if (i % 2 == 1): # Vertical movement
+            if i == 15 or i == 17: # Inner base
+                new_fire_coords.append(fire_coords[i])
+            elif (i < 10): # Upper fire
+                new_fire_coords.append(min(fire_coords[i] + random.randint(-big_delta, small_delta), FLOOR))
+            elif (i > 10): # Lower fire
+                new_fire_coords.append(min(fire_coords[i] + random.randint(-small_delta, small_delta), FLOOR))
+        else: # Horizontal movement
+            if i == 0: new_fire_coords.append(fire_coords[i] + random.randint(-big_delta, small_delta))
+            if i == 2 or i == 4 or i == 6: new_fire_coords.append(fire_coords[i] + random.randint(-small_delta, small_delta))
+            if i == 8: new_fire_coords.append(max(fire_coords[i] + random.randint(-small_delta, big_delta), new_fire_coords[6] + 1))
+            if i == 10: new_fire_coords.append(max(fire_coords[i] + random.randint(-small_delta, big_delta), fire_coords[14] + 1))
+            if i == 12: new_fire_coords.append(max(fire_coords[i] + random.randint(-small_delta, small_delta), fire_coords[14] + 1))
+            if i == 14 or i == 16: new_fire_coords.append(fire_coords[i] + random.randint(-small_delta, small_delta))
+            if i == 18: new_fire_coords.append(min(fire_coords[i] + random.randint(-small_delta, small_delta), new_fire_coords[16] - 1))
+            if i == 20: new_fire_coords.append(min(fire_coords[i] + random.randint(-big_delta, small_delta), new_fire_coords[16] - 1))
+    new_fire_coords.append(new_fire_coords[0])
+    new_fire_coords.append(new_fire_coords[1])
+    return new_fire_coords
 
-    def get_smoke_coords(x_offset, y_offset):
-        return [
-            x_offset + SMOKE_WIDTH / 2, y_offset,
-            x_offset, y_offset + SMOKE_HEIGHT / 2,
-            x_offset + SMOKE_WIDTH / 2, y_offset + SMOKE_HEIGHT,
-            x_offset + SMOKE_WIDTH, y_offset + SMOKE_HEIGHT / 2,
-            x_offset + SMOKE_WIDTH / 2, y_offset
-        ]
+def start_fire():
 
     def get_spark_coords(x_offset, y_offset):
         return [
@@ -183,22 +175,12 @@ def start_fire():
             tags=(tag, FIRE)
         )
 
-    def create_smoke(x_offset, y_offset, tag):
-        canvas.create_polygon(
-            get_smoke_coords(x_offset, y_offset),
-            fill=SMOKE_COLOR,
-            tags=tag
-        )
-
     def create_spark(x_offset, y_offset, tag):
         canvas.create_polygon(
             get_spark_coords(x_offset, y_offset),
             fill="orange",
             tags=tag
         )
-
-    def flatten_item(item, thickness, dec):
-        canvas.itemconfig(item, width=thickness - dec)
 
     create_fire("red", FIRE_RED)
     create_fire("orange", FIRE_ORANGE)
@@ -244,13 +226,34 @@ def start_fire():
 
     canvas.delete(SPARK_1, SPARK_2, SPARK_3)
 
-    # Fire shrinks
+def shrink_fire():
     for i in range(40):
         canvas.coords(FIRE_YELLOW, resize_fire_coords(canvas.coords(FIRE_YELLOW), 1, 3))
         canvas.coords(FIRE_ORANGE, resize_fire_coords(canvas.coords(FIRE_ORANGE), 2, 4))
         canvas.coords(FIRE_RED, resize_fire_coords(canvas.coords(FIRE_RED), 3, 5))
         tk.update()
         time.sleep(0.02)
+
+def turn_to_ash():
+
+    def get_smoke_coords(x_offset, y_offset):
+        return [
+            x_offset + SMOKE_WIDTH / 2, y_offset,
+            x_offset, y_offset + SMOKE_HEIGHT / 2,
+            x_offset + SMOKE_WIDTH / 2, y_offset + SMOKE_HEIGHT,
+            x_offset + SMOKE_WIDTH, y_offset + SMOKE_HEIGHT / 2,
+            x_offset + SMOKE_WIDTH / 2, y_offset
+        ]
+
+    def create_smoke(x_offset, y_offset, tag):
+        canvas.create_polygon(
+            get_smoke_coords(x_offset, y_offset),
+            fill=SMOKE_COLOR,
+            tags=tag
+        )
+
+    def flatten_item(item, thickness, dec):
+        canvas.itemconfig(item, width=thickness - dec)
 
     i, j, k = 0, -20, -40
     ash_color_inc = 0
@@ -310,6 +313,8 @@ def animation():
     collide_crown_with_beard()
     time.sleep(0.1)
     start_fire()
+    shrink_fire()
+    turn_to_ash()
 
 def restart(event):
     canvas.delete('all')
